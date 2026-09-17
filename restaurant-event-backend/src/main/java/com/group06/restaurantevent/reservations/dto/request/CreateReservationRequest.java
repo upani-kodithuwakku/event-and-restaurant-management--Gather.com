@@ -30,5 +30,8 @@ public class CreateReservationRequest {
     private String contactName;
 
     @NotBlank
+    @Size(max = 20)
+    @Pattern(regexp = " *(?:0|\\+94) *[1-9](?: *[0-9]){8} *",
+            message = "Enter a Sri Lankan phone number, e.g. 0771234567 or +94 77 123 4567")
     private String contactPhone;
 }

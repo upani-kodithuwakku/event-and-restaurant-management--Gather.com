@@ -49,7 +49,7 @@ export default function BookingModal({ table, date, time, guests, existing, onCl
                   startTime: String(f.get('time')),
                   guestCount: Number(f.get('guests')),
                   contactName: String(f.get('name')),
-                  contactPhone: String(f.get('phone')),
+                  contactPhone: String(f.get('phone')).replace(/ /g, ''),
                   specialRequest: String(f.get('request')),
                   seatingPreference: table.location,
                 }, existing?.id));
@@ -62,7 +62,13 @@ export default function BookingModal({ table, date, time, guests, existing, onCl
                 <label>Guests<input required type="number" name="guests" min="1" max={table.capacity} defaultValue={guests} /></label>
                 <label>Contact name<input required name="name" autoComplete="name" defaultValue={existing?.contactName || user?.fullName || ''} placeholder="Your full name" /></label>
               </div>
-              <label>Phone number<input required type="tel" name="phone" autoComplete="tel" pattern="[+0-9 ()-]{7,20}" defaultValue={existing?.contactPhone || ''} placeholder="+94 77 123 4567" /></label>
+              <label>Phone number<input required type="tel" name="phone" autoComplete="tel" maxLength={20}
+                pattern={String.raw` *(?:0|\+94) *[1-9](?: *[0-9]){8} *`}
+                onInvalid={e => e.currentTarget.setCustomValidity('Enter a Sri Lankan phone number, e.g. 0771234567 or +94 77 123 4567.')}
+                onInput={e => e.currentTarget.setCustomValidity('')}
+                aria-describedby="reservation-phone-help"
+                defaultValue={existing?.contactPhone || ''} placeholder="+94 77 123 4567" /></label>
+              <p id="reservation-phone-help" className="muted small">Use 0771234567 or +94 77 123 4567.</p>
               <label>Anything we should know?<textarea name="request" maxLength={500} defaultValue={existing?.specialRequest} placeholder="A birthday, dietary needs, or a favorite seat…" /></label>
               <p className="muted small"><CalendarDaysIcon className="inline-icon" /> Your table is reserved for 2 hours. No booking fee.</p>
               {error && <p role="alert" className="error">{error}</p>}
